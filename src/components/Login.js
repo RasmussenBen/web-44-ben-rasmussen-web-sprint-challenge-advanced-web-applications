@@ -1,33 +1,25 @@
 import React, { useState } from "react";
-import axiosWithAuth from "../helpers/axiosWithAuth";
-import { useHistory } from 'react-router';
 
-const initialValues = {username: 'Lambda', password: 'School'};
+import axiosWithAuth from '../helpers/axiosWithAuth'
+import { useHistory } from 'react-router'
+
+const initialValues = {username: '', password: ''}
 
 const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
-
-  const { push } = useHistory();
-  const [formValues, setFormValues] = useState(initialValues);
-  const [error, setError] = useState();
+  const { push } = useHistory()
+  const [formValues, setFormValues] = useState(initialValues)
+  const [error, setError] = useState()
 
   const handleChanges = (e) => {
     setFormValues({
       ...formValues,
       [e.target.name]: e.target.value
-    });
-  };
+    })
+  }
 
   const handleSubmit = e => {
-    e.preventDefault();
+    e.preventDefault()
 
-    // Code to use if we wanted to make sure a value is entered for username and password
-    // if (formValues.username.length <1 || formValues.password.length < 1) {
-    //   setError("Username or Password not valid.")
-    // } 
-
-    // Code to validate that username ("Lambda") and password ("School") match testing scenario for this sprint
     if (formValues.username !== "Lambda" || formValues.password !== "School") {
       setError("Username or Password not valid.")
     } 
@@ -49,7 +41,6 @@ const Login = () => {
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
-        <h2>Build login form here</h2>
       </div>
       <form onSubmit={handleSubmit}>
         <label htmlFor="username">Username</label>
@@ -74,10 +65,10 @@ const Login = () => {
 
       <p data-testid="errorMessage" className="error">{error}</p>
     </div>
-  );
-};
+  )
+}
 
-export default Login;
+export default Login
 
 //Task List:
 //1. Build a form containing a username and password field.
