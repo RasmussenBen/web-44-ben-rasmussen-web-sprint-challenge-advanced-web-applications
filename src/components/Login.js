@@ -1,71 +1,65 @@
 import React, { useState } from "react";
-import { useHistory } from 'react-router'
-import axios from "axios";
+import axiosWithAuth from "../helpers/axiosWithAuth";
+import { useHistory } from 'react-router';
+
+const initialValues = {username: 'Lambda', password: 'School'};
 
 const Login = () => {
-  // make a post request to retrieve a token from the api
-  // when you have handled the token, navigate to the BubblePage route
+  const { push } = useHistory();
+  const [formValues, setFormValues] = useState(initialValues);
+  const [error, setError] = useState();
 
-  let history = useHistory()
-
-  const [error, setError] = useState({
-    error: ''
-  })
-  const [state, setState] = useState({
-    username: '',
-    password: ''
-  })
-
-  const handleChange = e => {
-    setState({
-      ...state,
+  const handleChanges = (e) => {
+    setFormValues({
+      ...formValues,
       [e.target.name]: e.target.value
-    })
-  }
+    });
+  };
 
   const handleSubmit = e => {
-    e.preventDefault()
+    e.preventDefault();
+    if (formValues.username !== "Lambda" || formValues.password !== "School") {
+      setError("Username or Password not valid.")
+    } 
 
-    if (state.username === '' || state.password === '') {
-      setError('Please enter username and password')
-    }
-
-    axios.post('http://localhost:5000/api/login', {
-      username: state.username,
-      password: state.password
-    })
-    .then(res => {
-      localStorage.setItem('token', res.data.payload)
-      history.pushState('/protected')
-    })
-    .catch(err => {
-      console.log(err)
-    })
+    axiosWithAuth()
+    .post('/login', formValues)
+        .then((res) =>{
+          console.log("Axios Login Post ", res)
+          localStorage.setItem('token', res.data.payload)
+          push('/bubblepage')
+        })
+        .catch((err) => {
+          console.log({err})
+        })
   }
 
   return (
     <div>
       <h1>Welcome to the Bubble App!</h1>
       <div data-testid="loginForm" className="login-form">
-        <h2>Login Here</h2>
-        <form onSubmit={handleSubmit}>
-          <input
-            type='text'
-            name='username'
-            id='username'
-            value={state.username}
-            onChange={handleChange}
-          />
-          <input
-            type='password'
-            name='password'
-            id='password'
-            value={state.password}
-            onChange={handleChange}
-          />
-          <button>Login</button>
-        </form>
+        <h2>Build login form here</h2>
       </div>
+      <form onSubmit={handleSubmit}>
+        <label>Username</label>
+        <input
+          id="username"
+          data-testid="username"
+          name="username"
+          value={formValues.username}
+          onChange={handleChanges}
+        />
+        <label>Password</label>
+        <input
+          id="password"
+          data-testid="password"
+          name="password"
+          type="password"
+          value={formValues.password}
+          onChange={handleChanges}
+        />
+        <button>Login</button>
+      </form>
 
       <p data-testid="errorMessage" className="error">{error}</p>
     </div>
