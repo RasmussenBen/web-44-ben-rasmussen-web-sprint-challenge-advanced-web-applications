@@ -5,6 +5,9 @@ import { useHistory } from 'react-router';
 const initialValues = {username: 'Lambda', password: 'School'};
 
 const Login = () => {
+  // make a post request to retrieve a token from the api
+  // when you have handled the token, navigate to the BubblePage route
+
   const { push } = useHistory();
   const [formValues, setFormValues] = useState(initialValues);
   const [error, setError] = useState();
@@ -18,12 +21,19 @@ const Login = () => {
 
   const handleSubmit = e => {
     e.preventDefault();
+
+    // Code to use if we wanted to make sure a value is entered for username and password
+    // if (formValues.username.length <1 || formValues.password.length < 1) {
+    //   setError("Username or Password not valid.")
+    // } 
+
+    // Code to validate that username ("Lambda") and password ("School") match testing scenario for this sprint
     if (formValues.username !== "Lambda" || formValues.password !== "School") {
       setError("Username or Password not valid.")
     } 
 
     axiosWithAuth()
-    .post('/login', formValues)
+    .post('/api/login', formValues)
         .then((res) =>{
           console.log("Axios Login Post ", res)
           localStorage.setItem('token', res.data.payload)
@@ -32,6 +42,7 @@ const Login = () => {
         .catch((err) => {
           console.log({err})
         })
+
   }
 
   return (
@@ -41,7 +52,7 @@ const Login = () => {
         <h2>Build login form here</h2>
       </div>
       <form onSubmit={handleSubmit}>
-        <label>Username</label>
+        <label htmlFor="username">Username</label>
         <input
           id="username"
           data-testid="username"
@@ -49,7 +60,7 @@ const Login = () => {
           value={formValues.username}
           onChange={handleChanges}
         />
-        <label>Password</label>
+        <label htmlFor="password">Password</label>
         <input
           id="password"
           data-testid="password"
